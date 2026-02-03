@@ -1,0 +1,107 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/about.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - LMS Nepal</title>
+  <link rel="stylesheet" href="about.css">
+   <link rel="stylesheet" href="style.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">LMS Nepal</div>
+  <ul class="nav-links">
+    <li><a href="{% url 'index' %}" >Home</a></li>
+    <li><a href="{% url 'about' %}" class="active">About</a></li>
+    <li><a href="{% url 'loans' %}" >Loans</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+  </ul>
+  <div class="auth-links">
+    <a href="login.html" class="btn login-btn">Login</a>
+    <a href="register.html" class="btn register-btn">Register</a>
+  </div>
+</nav>
+
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>About LMS Nepal</h1>
+      <p>Empowering cooperatives with modern financial management solutions.</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about">
+    <div class="about-container">
+      <h2>Who We Are</h2>
+      <p>
+        LMS Nepal is a Loan Management System designed specifically for cooperative societies in Nepal. 
+        Our mission is to simplify loan processing, enhance transparency, and provide digital tools 
+        for better financial management. By combining technology with cooperative values, 
+        we aim to strengthen community-driven development.
+      </p>
+
+      <h2>Our Mission</h2>
+      <p>
+        To empower cooperatives across Nepal with digital solutions that make loan management simple, secure, and efficient.
+      </p>
+
+      <h2>Our Vision</h2>
+      <p>
+        A financially inclusive Nepal where every cooperative has the tools to manage loans effectively and support its members’ growth.
+      </p>
+
+      <h2>Our Core Values</h2>
+      <ul class="values">
+        <li>✅ Transparency</li>
+        <li>✅ Trust</li>
+        <li>✅ Community Empowerment</li>
+        <li>✅ Innovation</li>
+      </ul>
+    </div>
+  </section>
+
+  
+  <section class="team">
+    <h2>Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <img src="{% static 'core/images/user.png' %}" alt="Cooperative loans image">
+
+        <h3>Member 1</h3>
+        <p>Project Lead</p>
+      </div>
+      <div class="team-card">
+        <img src="{% static 'core/images/user.png' %}" alt="Cooperative loans image">
+
+        <h3>Member 2</h3>
+        <p>Finance Specialist</p>
+      </div>
+      <div class="team-card">
+        <img src="images/team3.jpg" alt="Team Member">
+        <img src="{% static 'core/images/user.png' %}" alt="Cooperative loans image">
+
+        <h3>Member 3</h3>
+        <p>Technical Developer</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 LMS Nepal. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="{% static 'core/userdash.css' %}">
+
+  <style>
+
+.sidebar {
+    width: 240px;
+    background: #1e293b;
+    color: #fff;
+    padding: 20px;
+}
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 22px;
+}
+.sidebar a {
+    display: block;
+    padding: 12px 15px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+.sidebar a:hover,
+.sidebar a.active {
+    background: #2563eb;
+    color: #fff;
+}
+.logout-btn {
+    margin-top: 30px;
+    background: #dc2626;
+    color: white !important;
+}
+
+/* ===================== PROFILE BOX ===================== */
+.profile-box {
+    max-width: 500px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+.profile-box label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #1f2937;
+}
+.profile-box input,
+.profile-box textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+    background: #f8fafc;
+}
+.profile-box input:disabled {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+/* ===================== PROFILE PAGE ===================== */
+.profile-info .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #2563eb;
+}
+.user-details h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+.user-details p {
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: #475569;
+}
+
+/* ===================== LOAN TABLE ===================== */
+.user-loans h3 {
+    margin-bottom: 15px;
+}
+.user-loans table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+}
+.user-loans th,
+.user-loans td {
+    padding: 12px 16px;
+    font-size: 14px;
+    text-align: left;
+}
+.user-loans th {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: #1f2937;
+}
+.user-loans tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+.user-loans tr:last-child {
+    border-bottom: none;
+}
+.user-loans tbody tr:hover {
+    background: #f9fafb;
+}
+.user-loans .status.approved { color: #16a34a; font-weight: 600; }
+.user-loans .status.pending { color: #ca8a04; font-weight: 600; }
+.user-loans .status.closed { color: #2563eb; font-weight: 600; }
+.user-loans .status.rejected { color: #dc2626; font-weight: 600; }
+  </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>LMS</h2>
+  <a href="{% url 'user_dashboard' %}">Dashboard</a>
+  <a href="{% url 'apply_loan' %}">Apply Loan</a>
+  <a href="{% url 'loan_status' %}">Loan Status</a>
+  <a href="{% url 'loan_history' %}">Loan History</a>
+  <a href="{% url 'emi_calculator' %}">EMI Calculator</a>
+  <a class="active" href="{% url 'profile' %}">Profile</a>
+  <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="topbar">
+    <h2>My Profile</h2>
+  </div>
+
+  <!-- USER INFO -->
+  <section class="section profile-info">
+    <div class="profile-header">
+      <img src="{% static 'core/images/user.png' %}" alt="User Picture" class="profile-pic">
+      <div class="user-details">
+        <h3>{{ request.user.get_full_name }}</h3>
+        <p><strong>Username:</strong> {{ request.user.username }}</p>
+        <p><strong>Email:</strong> {{ request.user.email }}</p>
+        <p><strong>Phone:</strong> {{ request.user.member.phone|default:"Not provided" }}</p>
+        <p><strong>Address:</strong> {{ request.user.member.address|default:"Not provided" }}</p>
+        <p><strong>Date of Birth:</strong> {{ request.user.member.dob|date:"Y-m-d"|default:"Not provided" }}</p>
+        <p><strong>Occupation:</strong> {{ request.user.member.occupation|default:"Not provided" }}</p>
+        <p><strong>Monthly Income:</strong> NPR {{ request.user.member.monthly_income|default:"0.00" }}</p>
+      </div>
+    </div>
+  </section>
+
+<!-- USER LOANS -->
+<section class="section user-loans">
+  <h3>My Loans</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Loan ID</th>
+        <th>Type</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Applied On</th>
+        <th>Total Paid</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in loan_data %}
+      <tr>
+        <td>#{{ item.loan.id }}</td>
+        <td>{{ item.loan.loan_type|default:"General Loan" }}</td>
+        <td>NPR {{ item.loan.amount|floatformat:2 }}</td>
+        <td class="status {{ item.loan.status }}">{{ item.loan.status|capfirst }}</td>
+        <td>{{ item.loan.issued_date|date:"Y-m-d" }}</td>
+        <td>NPR {{ item.total_paid|floatformat:2 }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" style="text-align:center;">No loans found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard - Loan Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f1f5f9;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #1e293b;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 22px;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 15px;
+      color: #cbd5e1;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: #2563eb;
+      color: #fff;
+    }
+
+    .logout-btn {
+      margin-top: auto;
+      background: #dc2626 !important;
+      color: white !important;
+      text-align: center;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .topbar {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .topbar h2 {
+      color: #1e293b;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .topbar p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .card-label {
+      color: #64748b;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .card-value {
+      color: #1e293b;
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .card-subtext {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .section h3 {
+      color: #1e293b;
+      margin-bottom: 20px;
+      font-size: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #1e293b;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: #2563eb;
+      color: white;
+      border-color: #2563eb;
+      transform: translateX(3px);
+    }
+
+    .action-btn span {
+      font-size: 20px;
+      margin-right: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 12px;
+      text-align: left;
+      color: #64748b;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 15px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .status-paid {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+    
+    .status-closed {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .amount {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+    }
+
+    .empty-state span {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 15px;
+      opacity: 0.5;
+    }
+
+    .notifications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notification-card {
+    display: flex;
+    align-items: flex-start;
+    background: #f8fafc;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border-left: 4px solid #2563eb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: background 0.3s;
+}
+
+.notification-card.unread {
+    background: #e0f2fe;
+    border-left-color: #0284c7;
+}
+
+.notification-card:hover {
+    background: #f1f5f9;
+}
+
+.note-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    margin-top: 2px;
+}
+
+.note-content p {
+    margin-bottom: 4px;
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.note-content small {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.notifications {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification-card {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border-left: 4px solid #2563eb;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.notification-card:hover {
+  background: #e0f2fe;
+  transform: translateX(2px);
+}
+
+.notification-card.overdue {
+  border-left-color: #dc2626;
+  background: #fee2e2;
+}
+
+.notification-card .icon {
+  font-size: 24px;
+  margin-right: 12px;
+}
+
+.notification-card .note-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-card .note-content .message {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.notification-card .note-content .date {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>LMS</h2>
+    <a class="active" href="{% url 'user_dashboard' %}">Dashboard</a>
+    <a href="{% url 'apply_loan' %}">Apply Loan</a>
+    <a href="{% url 'loan_status' %}">Loan Status</a>
+    <a href="{% url 'loan_history' %}">Loan History</a>
+    <a href="{% url 'emi_calculator' %}">EMI Calculator</a>
+    <a href="{% url 'profile' %}">Profile</a>
+    <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- Top bar -->
+    <div class="topbar">
+      <h2>Welcome back, {{ request.user.get_full_name|default:request.user.username }}</h2>
+      <p>Here's what's happening with your loans today</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Active Loans</div>
+        <div class="card-value">{{ active_loans_count }}</div>
+        <div class="card-subtext">₹{{ total_outstanding|floatformat:0 }} total outstanding</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Pending Applications</div>
+        <div class="card-value">{{ pending_loans_count }}</div>
+        <div class="card-subtext">{% if pending_loans_count > 0 %}Under review{% else %}No pending applications{% endif %}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Next EMI Due</div>
+        <div class="card-value">₹{{ next_emi_due|floatformat:0 }}</div>
+        <div class="card-subtext">{% if next_due_date %}Due on {{ next_due_date|date:"M d, Y" }}{% else %}No active EMI{% endif %}</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Credit Score</div>
+        <div class="card-value">{{ credit_score }}</div>
+        <div class="card-subtext">Good standing</div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <section class="section">
+      <h3>Quick Actions</h3>
+      <div class="quick-actions">
+        <a href="{% url 'apply_loan' %}" class="action-btn">
+          <span>📝</span>
+          <div>Apply for New Loan</div>
+        </a>
+        <a href="{% url 'emi_calculator' %}" class="action-btn">
+          <span>🧮</span>
+          <div>Calculate EMI</div>
+        </a>
+        <a href="{% url 'profile' %}" class="action-btn">
+          <span>📄</span>
+          <div>View Profile</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Active Loans Overview -->
+    <section class="section">
+      <h3>Active Loans</h3>
+      {% if active_loans %}
+      <table>
+        <thead>
+          <tr>
+            <th>Loan ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Interest Rate</th>
+            <th>Duration</th>
+            <th>Due Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in active_loans %}
+          <tr>
+            <td>#LN{{ loan.id|stringformat:"04d" }}</td>
+            <td>{{ loan.loan_type|default:"General Loan" }}</td>
+            <td class="amount">₹{{ loan.amount|floatformat:0 }}</td>
+            <td>{{ loan.interest_rate }}%</td>
+            <td>{{ loan.duration_months }} months</td>
+            <td>{{ loan.due_date|date:"M d, Y" }}</td>
+            <td><span class="status-badge status-active">{{ loan.status|title }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <span>📋</span>
+        <p>No active loans found</p>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="section">
+      <h3>Recent Activity</h3>
+      {% if recent_activity %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Transaction</th>
+            <th>Loan ID</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for activity in recent_activity %}
+          <tr>
+            <td>{{ activity.date|date:"M d, Y" }}</td>
+            <td>{{ activity.transaction }}</td>
+            <td>{{ activity.loan_id }}</td>
+            <td class="amount">₹{{ activity.amount|floatformat:0 }}</td>
+            <td>
+              {% if activity.status == 'pending' %}
+                <span class="status-badge status-pending">Pending</span>
+              {% elif activity.status == 'approved' %}
+                <span class="status-badge status-active">Approved</span>
+              {% elif activity.status == 'paid' %}
+                <span class="status-badge status-paid">Paid</span>
+              {% elif activity.status == 'closed' %}
+                <span class="status-badge status-closed">Closed</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <span>📊</span>
+        <p>No recent activity</p>
+      </div>
+      {% endif %}
+    </section>
+<!-- Pending EMIs -->
+<section class="section">
+  <h3>💳 Pending EMIs</h3>
+
+  {% if emis %}
+  <table>
+    <thead>
+      <tr>
+        <th>Loan ID</th>
+        <th>Due Date</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emi in emis %}
+      <tr>
+        <td>#LN{{ emi.loan.id|stringformat:"04d" }}</td>
+        <td>{{ emi.due_date|date:"M d, Y" }}</td>
+        <td class="amount">₹{{ emi.amount|floatformat:0 }}</td>
+        <td>
+          {% if emi.is_paid %}
+            <span class="status-badge status-paid">Paid</span>
+          {% else %}
+            <span class="status-badge status-pending">Unpaid</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if not emi.is_paid %}
+            <a href="{% url 'pay_emi' emi.id %}" class="action-btn" style="padding:6px 12px;">
+              Pay EMI
+            </a>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div class="empty-state">
+      <span>🎉</span>
+      <p>No pending EMI dues</p>
+    </div>
+  {% endif %}
+</section>
+
+
+<section class="section">
+  <h3>🔔 Notifications</h3>
+
+  {% if notifications %}
+    <div class="notifications">
+      {% for note in notifications %}
+        <div class="notification-card {% if "overdue" in note.message %}overdue{% endif %}">
+          <div class="icon">
+            {% if "Account created" in note.message %}
+              👤
+            {% elif "Loan" in note.message and "applied" in note.message %}
+              📝
+            {% elif "approved" in note.message %}
+              ✅
+            {% elif "closed" in note.message %}
+              🏁
+            {% elif "EMI" in note.message and "paid" in note.message %}
+              💵
+            {% elif "EMI" in note.message and "overdue" in note.message %}
+              ⚠️
+            {% else %}
+              🔔
+            {% endif %}
+          </div>
+          <div class="note-content">
+            <p class="message">{{ note.message }}</p>
+            <span class="date">{{ note.created_at|date:"M d, Y" }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <span>📭</span>
+      <p>No notifications yet</p>
+    </div>
+  {% endif %}
+</section>
+
+  </div>  
+</body>
+</html>

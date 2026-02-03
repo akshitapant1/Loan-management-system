@@ -1,0 +1,690 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'core/userdash.css' %}">
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apply Loan - LMS Nepal</title>
+<style>
+  /* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* LAYOUT */
+body {
+    display: flex;
+    min-height: 100vh;
+    background: #f4f6f9;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: #1e293b;
+    color: #fff;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 22px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 15px;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: 0.3s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.logout-btn {
+    margin-top: 30px;
+    background: #dc2626;
+    color: white !important;
+}
+
+/* MAIN CONTENT */
+.main {
+    flex: 1;
+    padding: 30px;
+    margin-left: 240px;
+}
+
+/* TOPBAR */
+.topbar {
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* SECTION CARD */
+.section {
+    max-width: 900px;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.section h3 {
+    margin-bottom: 10px;
+    color: #1e293b;
+}
+
+.section-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 25px;
+}
+
+/* FORM */
+.section form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* FULL WIDTH ELEMENTS */
+.section form .full {
+    grid-column: span 2;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* INPUTS */
+.section input,
+.section select,
+.section textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+}
+
+.section textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.section input:focus,
+.section select:focus,
+.section textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* BUTTON */
+.section button {
+    grid-column: span 2;
+    padding: 14px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+}
+
+.section button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Messages */
+.messages {
+    max-width: 900px;
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: #166534;
+    border-left: 4px solid #10b981;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+}
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #334155;
+    font-size: 14px;
+}
+
+label .required {
+    color: #ef4444;
+}
+
+hr {
+    grid-column: span 2;
+    border: none;
+    border-top: 2px solid #e2e8f0;
+    margin: 15px 0;
+}
+
+.section-header {
+    grid-column: span 2;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Dynamic Sections */
+.loan-specific-section {
+    display: none;
+    grid-column: span 2;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.loan-specific-section.active {
+    display: grid;
+}
+
+.info-box {
+    grid-column: span 2;
+    background: #f0f9ff;
+    border-left: 4px solid #3b82f6;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #1e40af;
+}
+
+/* File Upload Styling */
+input[type="file"] {
+    padding: 10px;
+    background: white;
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    padding: 8px 16px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: #2563eb;
+}
+
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>🏦 LMS</h2>
+  <a href="{% url 'user_dashboard' %}">Dashboard</a>
+  <a class="active" href="{% url 'apply_loan' %}">Apply Loan</a>
+  <a href="{% url 'loan_status' %}">Loan Status</a>
+  <a href="{% url 'loan_history' %}">Loan History</a>
+  <a href="{% url 'emi_calculator' %}">EMI Calculator</a>
+  <a href="{% url 'profile' %}">Profile</a>
+  <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+</div>
+
+<div class="main">
+  <div class="topbar"><h2>💼 Apply for Loan</h2></div>
+
+  <!-- Display Messages -->
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <section class="section">
+    <h3>Loan Application Form</h3>
+    <p class="section-subtitle">Please fill in all required information accurately</p>
+
+    <form method="POST" action="{% url 'apply_loan' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Basic Loan Information -->
+      <div class="section-header">📋 Basic Loan Information</div>
+
+      <div class="form-group full">
+        <label for="loan_type">Loan Type <span class="required">*</span></label>
+        <select name="loan_type" id="loan_type" required onchange="showLoanSpecificFields()">
+          <option value="">-- Select Loan Type --</option>
+          <option value="Personal Loan">Personal Loan</option>
+          <option value="Home Loan">Home Loan</option>
+          <option value="Education Loan">Education Loan</option>
+          <option value="Business Loan">Business Loan</option>
+          <option value="Agriculture Loan">Agriculture Loan</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="amount">Loan Amount (NPR) <span class="required">*</span></label>
+        <input type="number" name="amount" id="amount" placeholder="e.g. 500000" required step="1000" min="10000">
+      </div>
+
+      <div class="form-group">
+        <label for="duration">Loan Duration (Months) <span class="required">*</span></label>
+        <input type="number" name="duration" id="duration" placeholder="e.g. 24" required min="6" max="360">
+      </div>
+
+      <div class="form-group full">
+        <label for="purpose">Purpose of Loan <span class="required">*</span></label>
+        <textarea name="purpose" id="purpose" placeholder="Explain in detail why you need this loan" required></textarea>
+      </div>
+
+      <!-- PERSONAL LOAN SPECIFIC FIELDS -->
+      <div id="personal-loan-fields" class="loan-specific-section">
+        <div class="info-box full">
+          ℹ️ Personal loans are unsecured loans for personal expenses like medical, wedding, travel, etc.
+        </div>
+
+        <div class="form-group">
+          <label for="personal_reason">Specific Reason <span class="required">*</span></label>
+          <select name="personal_reason" id="personal_reason">
+            <option value="">-- Select Reason --</option>
+            <option value="Medical Emergency">Medical Emergency</option>
+            <option value="Wedding">Wedding</option>
+            <option value="Travel">Travel</option>
+            <option value="Debt Consolidation">Debt Consolidation</option>
+            <option value="Home Renovation">Home Renovation</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="existing_emi">Existing Monthly EMI (NPR)</label>
+          <input type="number" name="existing_emi" id="existing_emi" placeholder="0" step="100" min="0">
+        </div>
+      </div>
+
+      <!-- HOME LOAN SPECIFIC FIELDS -->
+      <div id="home-loan-fields" class="loan-specific-section">
+        <div class="info-box full">
+          🏠 Home loans require property documents and proof of income for verification.
+        </div>
+
+        <div class="section-header full">Property Details</div>
+
+        <div class="form-group">
+          <label for="property_type">Property Type <span class="required">*</span></label>
+          <select name="property_type" id="property_type">
+            <option value="">-- Select --</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Independent House">Independent House</option>
+            <option value="Villa">Villa</option>
+            <option value="Land">Land</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="property_value">Property Value (NPR) <span class="required">*</span></label>
+          <input type="number" name="property_value" id="property_value" placeholder="e.g. 5000000" step="10000">
+        </div>
+
+        <div class="form-group">
+          <label for="property_location">Property Location <span class="required">*</span></label>
+          <input type="text" name="property_location" id="property_location" placeholder="City, District">
+        </div>
+
+        <div class="form-group">
+          <label for="construction_status">Construction Status <span class="required">*</span></label>
+          <select name="construction_status" id="construction_status">
+            <option value="">-- Select --</option>
+            <option value="Ready to Move">Ready to Move</option>
+            <option value="Under Construction">Under Construction</option>
+            <option value="New Construction">New Construction</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label for="property_documents">Upload Property Documents (PDF) <span class="required">*</span></label>
+          <input type="file" name="property_documents" id="property_documents" accept=".pdf">
+        </div>
+
+        <div class="form-group">
+          <label for="co_applicant_name">Co-Applicant Name (if any)</label>
+          <input type="text" name="co_applicant_name" id="co_applicant_name" placeholder="Full name">
+        </div>
+
+        <div class="form-group">
+          <label for="co_applicant_relation">Relation with Co-Applicant</label>
+          <select name="co_applicant_relation" id="co_applicant_relation">
+            <option value="">-- Select --</option>
+            <option value="Spouse">Spouse</option>
+            <option value="Parent">Parent</option>
+            <option value="Sibling">Sibling</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- EDUCATION LOAN SPECIFIC FIELDS -->
+      <div id="education-loan-fields" class="loan-specific-section">
+        <div class="info-box full">
+          🎓 Education loans are for students pursuing higher education in Nepal or abroad.
+        </div>
+
+        <div class="section-header full">Education Details</div>
+
+        <div class="form-group">
+          <label for="student_name">Student Name <span class="required">*</span></label>
+          <input type="text" name="student_name" id="student_name" placeholder="Full name of student">
+        </div>
+
+        <div class="form-group">
+          <label for="course_name">Course/Program <span class="required">*</span></label>
+          <input type="text" name="course_name" id="course_name" placeholder="e.g., Bachelor of Engineering">
+        </div>
+
+        <div class="form-group">
+          <label for="institution_name">Institution Name <span class="required">*</span></label>
+          <input type="text" name="institution_name" id="institution_name" placeholder="College/University name">
+        </div>
+
+        <div class="form-group">
+          <label for="institution_location">Institution Location <span class="required">*</span></label>
+          <select name="institution_location" id="institution_location">
+            <option value="">-- Select --</option>
+            <option value="Nepal">Nepal</option>
+            <option value="India">India</option>
+            <option value="USA">USA</option>
+            <option value="UK">UK</option>
+            <option value="Australia">Australia</option>
+            <option value="Other">Other Country</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="course_duration">Course Duration (Years) <span class="required">*</span></label>
+          <input type="number" name="course_duration" id="course_duration" placeholder="e.g., 4" min="1" max="10">
+        </div>
+
+        <div class="form-group">
+          <label for="admission_letter">Upload Admission Letter (PDF) <span class="required">*</span></label>
+          <input type="file" name="admission_letter" id="admission_letter" accept=".pdf">
+        </div>
+
+        <div class="form-group">
+          <label for="guardian_name">Guardian Name <span class="required">*</span></label>
+          <input type="text" name="guardian_name" id="guardian_name" placeholder="Parent/Guardian name">
+        </div>
+
+        <div class="form-group">
+          <label for="guardian_income">Guardian Monthly Income (NPR) <span class="required">*</span></label>
+          <input type="number" name="guardian_income" id="guardian_income" placeholder="e.g., 80000" step="1000">
+        </div>
+      </div>
+
+      <!-- BUSINESS LOAN SPECIFIC FIELDS -->
+      <div id="business-loan-fields" class="loan-specific-section">
+        <div class="info-box full">
+          💼 Business loans require detailed business information and financial documents.
+        </div>
+
+        <div class="section-header full">Business Details</div>
+
+        <div class="form-group">
+          <label for="business_name">Business Name <span class="required">*</span></label>
+          <input type="text" name="business_name" id="business_name" placeholder="Registered business name">
+        </div>
+
+        <div class="form-group">
+          <label for="business_type">Business Type <span class="required">*</span></label>
+          <select name="business_type" id="business_type">
+            <option value="">-- Select --</option>
+            <option value="Sole Proprietorship">Sole Proprietorship</option>
+            <option value="Partnership">Partnership</option>
+            <option value="Private Limited">Private Limited</option>
+            <option value="Public Limited">Public Limited</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="business_registration">Business Registration Number <span class="required">*</span></label>
+          <input type="text" name="business_registration" id="business_registration" placeholder="Registration number">
+        </div>
+
+        <div class="form-group">
+          <label for="business_age">Years in Business <span class="required">*</span></label>
+          <input type="number" name="business_age" id="business_age" placeholder="e.g., 3" min="0">
+        </div>
+
+        <div class="form-group">
+          <label for="annual_turnover">Annual Turnover (NPR) <span class="required">*</span></label>
+          <input type="number" name="annual_turnover" id="annual_turnover" placeholder="e.g., 5000000" step="10000">
+        </div>
+
+        <div class="form-group">
+          <label for="business_plan">Upload Business Plan (PDF)</label>
+          <input type="file" name="business_plan" id="business_plan" accept=".pdf">
+        </div>
+
+        <div class="form-group full">
+          <label for="business_address">Business Address <span class="required">*</span></label>
+          <textarea name="business_address" id="business_address" placeholder="Complete business address"></textarea>
+        </div>
+      </div>
+
+      <!-- AGRICULTURE LOAN SPECIFIC FIELDS -->
+      <div id="agriculture-loan-fields" class="loan-specific-section">
+        <div class="info-box full">
+          🌾 Agriculture loans are for farmers and agricultural activities.
+        </div>
+
+        <div class="section-header full">Agricultural Details</div>
+
+        <div class="form-group">
+          <label for="farm_size">Farm Size (in Ropani) <span class="required">*</span></label>
+          <input type="number" name="farm_size" id="farm_size" placeholder="e.g., 10" step="0.1" min="0">
+        </div>
+
+        <div class="form-group">
+          <label for="farming_type">Type of Farming <span class="required">*</span></label>
+          <select name="farming_type" id="farming_type">
+            <option value="">-- Select --</option>
+            <option value="Crop Farming">Crop Farming</option>
+            <option value="Livestock">Livestock</option>
+            <option value="Poultry">Poultry</option>
+            <option value="Fishery">Fishery</option>
+            <option value="Mixed Farming">Mixed Farming</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="land_ownership">Land Ownership <span class="required">*</span></label>
+          <select name="land_ownership" id="land_ownership">
+            <option value="">-- Select --</option>
+            <option value="Owned">Owned</option>
+            <option value="Leased">Leased</option>
+            <option value="Family Land">Family Land</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="crop_type">Main Crop/Product <span class="required">*</span></label>
+          <input type="text" name="crop_type" id="crop_type" placeholder="e.g., Rice, Wheat, Vegetables">
+        </div>
+
+        <div class="form-group full">
+          <label for="land_documents">Upload Land Ownership Documents (PDF)</label>
+          <input type="file" name="land_documents" id="land_documents" accept=".pdf">
+        </div>
+
+        <div class="form-group">
+          <label for="irrigation_facility">Irrigation Facility Available? <span class="required">*</span></label>
+          <select name="irrigation_facility" id="irrigation_facility">
+            <option value="">-- Select --</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Partial">Partial</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="farming_experience">Years of Farming Experience <span class="required">*</span></label>
+          <input type="number" name="farming_experience" id="farming_experience" placeholder="e.g., 5" min="0">
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- Common Financial Information -->
+      <div class="section-header">💰 Financial Information</div>
+
+      <div class="form-group">
+        <label for="monthly_income">Your Monthly Income (NPR) <span class="required">*</span></label>
+        <input type="number" name="monthly_income" id="monthly_income" placeholder="e.g. 60000" required step="1000" min="0">
+      </div>
+
+      <div class="form-group">
+        <label for="employment_type">Employment Status <span class="required">*</span></label>
+        <select name="employment_type" id="employment_type" required>
+          <option value="">-- Select --</option>
+          <option value="Salaried">Salaried Employee</option>
+          <option value="Self-Employed">Self-Employed</option>
+          <option value="Business Owner">Business Owner</option>
+          <option value="Farmer">Farmer</option>
+          <option value="Student">Student</option>
+          <option value="Retired">Retired</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="existing_loans">Do you have existing loans? <span class="required">*</span></label>
+        <select name="existing_loans" id="existing_loans" required>
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="repayment_method">Preferred Repayment Method <span class="required">*</span></label>
+        <select name="repayment_method" id="repayment_method" required>
+          <option value="Monthly EMI">Monthly EMI</option>
+          <option value="Quarterly">Quarterly</option>
+        </select>
+      </div>
+
+      <!-- Hidden Fields -->
+      <input type="hidden" name="interest_rate" value="12.00">
+      <input type="hidden" name="due_date" id="due_date">
+
+      <!-- Additional Remarks -->
+      <div class="form-group full">
+        <label for="remarks">Additional Remarks (Optional)</label>
+        <textarea name="remarks" id="remarks" placeholder="Any additional information you'd like to provide"></textarea>
+      </div>
+
+      <button type="submit">📝 Submit Loan Application</button>
+    </form>
+  </section>
+
+</div>
+
+<script>
+  // Show/hide loan-specific fields based on loan type
+  function showLoanSpecificFields() {
+    const loanType = document.getElementById('loan_type').value;
+    
+    // Hide all specific sections
+    document.querySelectorAll('.loan-specific-section').forEach(section => {
+      section.classList.remove('active');
+      // Make all fields in hidden sections optional
+      section.querySelectorAll('input, select, textarea').forEach(field => {
+        field.removeAttribute('required');
+      });
+    });
+    
+    // Show and make required the selected loan type fields
+    let sectionId = '';
+    if (loanType === 'Personal Loan') sectionId = 'personal-loan-fields';
+    else if (loanType === 'Home Loan') sectionId = 'home-loan-fields';
+    else if (loanType === 'Education Loan') sectionId = 'education-loan-fields';
+    else if (loanType === 'Business Loan') sectionId = 'business-loan-fields';
+    else if (loanType === 'Agriculture Loan') sectionId = 'agriculture-loan-fields';
+    
+    if (sectionId) {
+      const section = document.getElementById(sectionId);
+      section.classList.add('active');
+      // Make fields with * required
+      section.querySelectorAll('input, select, textarea').forEach(field => {
+        const label = field.parentElement.querySelector('label');
+        if (label && label.innerHTML.includes('*')) {
+          field.setAttribute('required', 'required');
+        }
+      });
+    }
+  }
+
+  // Auto-calculate due date based on duration
+  document.getElementById('duration').addEventListener('change', function() {
+    const months = parseInt(this.value) || 0;
+    const today = new Date();
+    today.setMonth(today.getMonth() + months);
+    
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    document.getElementById('due_date').value = `${year}-${month}-${day}`;
+  });
+</script>
+
+</body>
+</html>
