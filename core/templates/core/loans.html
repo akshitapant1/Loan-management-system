@@ -1,0 +1,167 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/loans.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loans - LMS Nepal</title>
+ 
+  <link rel="stylesheet" href="loans.css">
+  <link rel="stylesheet" href="{% static 'core/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">LMS Nepal</div>
+  <ul class="nav-links">
+    <li><a href="{% url 'index' %}" >Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'loans' %}" class="active">Loans</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+  </ul>
+  <div class="auth-links">
+    <a href="login.html" class="btn login-btn">Login</a>
+    <a href="register.html" class="btn register-btn">Register</a>
+  </div>
+</nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>Cooperative Loan Services in Nepal</h1>
+      <p>Affordable, accessible, and community-driven financial solutions.</p>
+    </div>
+  </section>
+
+  <!-- Loan Types Section -->
+  <section class="loan-types">
+    <h2>Explore Our Loan Options</h2>
+    <p class="subtitle">Designed to meet the needs of individuals, farmers, students, and entrepreneurs.</p>
+
+    <div class="loan-grid">
+
+      <div class="loan-card agriculture">
+        <img src="{% static 'core/images/loan-icon.png' %}" alt="Cooperative loans image">
+
+        <h3>Agriculture Loans</h3>
+        <p>Boost your farming with modern tools, seeds, and resources through low-interest loans.</p>
+      </div>
+
+      <div class="loan-card business">
+        <img src="{% static 'core/images/businessloan.png' %}" alt="Cooperative loans image">
+
+        <h3>Business Loans</h3>
+        <p>Expand or start your business with flexible repayment and cooperative support.</p>
+      </div>
+
+      <div class="loan-card personal">
+        <img src="{% static 'core/images/personalloan.png' %}" alt="Cooperative loans image">
+
+        <h3>Personal Loans</h3>
+        <p>Quick approval for urgent needs such as healthcare, travel, or family expenses.</p>
+      </div>
+
+      <div class="loan-card education">
+        <img src="{% static 'core/images/educationloan.png' %}" alt="Cooperative loans image">
+
+        <h3>Education Loans</h3>
+        <p>Invest in your future with affordable education loans for students and families.</p>
+      </div>
+
+      <div class="loan-card housing">
+        <img src="{% static 'core/images/housingloan.png' %}" alt="Cooperative loans image">
+
+        <h3>Housing Loans</h3>
+        <p>Build or renovate your dream home with convenient cooperative housing finance.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <h2>Start Your Loan Application Today</h2>
+    <p>Join thousands of cooperative members benefiting from affordable financial services.</p>
+    <a href="login.html" class="cta-btn">Apply Now</a>
+  </section>
+
+  <!-- Applied Loans Section -->
+  <section class="applied-loans">
+    <div class="container">
+      <h2>Applied Loans</h2>
+      <p class="subtitle">View all loan applications submitted to our cooperative.</p>
+      
+      {% if loans %}
+        <div class="loans-table-wrapper">
+          <table class="loans-table">
+            <thead>
+              <tr>
+                <th>Loan ID</th>
+                <th>Applicant</th>
+                <th>Loan Type</th>
+                <th>Amount (NPR)</th>
+                <th>Duration (Months)</th>
+                <th>Interest Rate (%)</th>
+                <th>Status</th>
+                <th>Applied Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loan in loans %}
+              <tr>
+                <td>#{{ loan.id }}</td>
+                <td>{{ loan.member.user.get_full_name|default:loan.member.user.username }}</td>
+                <td>
+                  {% if loan.loan_type %}
+                    {{ loan.loan_type|title }}
+                  {% else %}
+                    N/A
+                  {% endif %}
+                </td>
+                <td>{{ loan.amount|floatformat:2 }}</td>
+                <td>{{ loan.duration_months|default:"N/A" }}</td>
+                <td>{{ loan.interest_rate|floatformat:2 }}%</td>
+                <td>
+                  <span class="status-badge status-{{ loan.status }}">
+                    {{ loan.get_status_display }}
+                  </span>
+                </td>
+                <td>{{ loan.issued_date|date:"Y-m-d" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="loans-summary">
+          <div class="summary-card">
+            <h3>Total Loans Applied</h3>
+            <p class="summary-value">{{ total_loans }}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Total Amount</h3>
+            <p class="summary-value">NPR {{ total_amount|floatformat:2 }}</p>
+          </div>
+        </div>
+      {% else %}
+        <div class="no-loans">
+          <p>No loan applications yet. Be the first to apply!</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 LMS Nepal. All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>

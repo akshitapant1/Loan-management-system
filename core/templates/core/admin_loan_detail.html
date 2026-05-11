@@ -1,0 +1,774 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Details - LMS Nepal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .logo {
+      padding: 25px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 15px;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-left-color: #3b82f6;
+      padding-left: 30px;
+    }
+
+    .sidebar ul li a.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: white;
+      border-left-color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: white !important;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      padding: 26px 30px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border-left: 6px solid #3b82f6;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      color: #0f172a;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .back-link {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #e2e8f0;
+      color: #0f172a;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: #cbd5e1;
+    }
+
+    /* Messages */
+    .messages {
+      margin-bottom: 20px;
+    }
+
+    .alert {
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-weight: 500;
+      animation: slideIn 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .alert-success {
+      background-color: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .alert-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-left: 4px solid #f59e0b;
+    }
+
+    .alert-error {
+      background-color: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #ef4444;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-approved {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-closed {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .card h3 {
+      color: #0f172a;
+      font-size: 16px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card p {
+      color: #475569;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .info-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px 18px;
+      margin-top: 10px;
+    }
+
+    .info-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .info-item span {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .info-item strong {
+      color: #0f172a;
+      font-size: 14px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-approve {
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .btn-approve:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reject {
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .btn-reject:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    }
+
+    .doc-link {
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .doc-link:hover {
+      text-decoration: underline;
+    }
+
+    .muted {
+      color: #94a3b8;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Scrollbar */
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        z-index: 1000;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo"> LMS Nepal</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'admin_loans' %}" class="active">Loans</a></li>
+      <li><a href="{% url 'admin_applicants' %}">Applicants</a></li>
+      <li><a href="{% url 'admin_reports' %}">Reports</a></li>
+      <li><a href="{% url 'admin_settings' %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div>
+        <h1>Loan #{{ loan.id }}</h1>
+        <p>Full loan and applicant details for review.</p>
+      </div>
+      <div class="header-actions">
+        <a class="back-link" href="{% url 'admin_loans' %}">Back to Loans</a>
+        <button type="button" class="back-link action-print" data-action="print">Print</button>
+        <button type="button" class="back-link action-export" data-action="export">Export</button>
+        <span class="status-badge status-{{ loan.status }}">{{ loan.get_status_display }}</span>
+      </div>
+    </header>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="grid">
+      <div class="card">
+        <h3>Loan Summary</h3>
+        <p><strong>Amount:</strong> NPR {{ loan.amount|floatformat:2 }}</p>
+        <p><strong>Interest Rate:</strong> {{ loan.interest_rate|floatformat:2 }}%</p>
+        <p><strong>Duration:</strong> {{ loan.duration_months }} months</p>
+        <p><strong>Loan Type:</strong> {{ loan.loan_type|default:"N/A" }}</p>
+      </div>
+      <div class="card">
+        <h3>Timeline</h3>
+        <p><strong>Applied Date:</strong> {{ loan.issued_date|date:"M d, Y" }}</p>
+        <p><strong>Due Date:</strong> {{ loan.due_date|date:"M d, Y" }}</p>
+        <p><strong>Status:</strong> {{ loan.get_status_display }}</p>
+      </div>
+      <div class="card">
+        <h3>Applicant</h3>
+        <p><strong>Name:</strong> {{ loan.member.user.get_full_name|default:loan.member.user.username }}</p>
+        <p><strong>Email:</strong> {{ loan.member.user.email|default:"N/A" }}</p>
+        <p><strong>Phone:</strong> {{ loan.member.phone|default:"N/A" }}</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Applicant Information</h2>
+      <div class="info-list">
+        <div class="info-item">
+          <span>Full Name</span>
+          <strong>{{ loan.member.user.get_full_name|default:loan.member.user.username }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Username</span>
+          <strong>{{ loan.member.user.username }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Email</span>
+          <strong>{{ loan.member.user.email|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Phone</span>
+          <strong>{{ loan.member.phone|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Address</span>
+          <strong>{{ loan.member.address|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Occupation</span>
+          <strong>{{ loan.member.occupation|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Date of Birth</span>
+          <strong>{{ loan.member.dob|date:"M d, Y"|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Monthly Income</span>
+          <strong>{% if loan.member.monthly_income %}NPR {{ loan.member.monthly_income|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Joined Date</span>
+          <strong>{{ loan.member.joined_date|date:"M d, Y" }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Loan Details</h2>
+      <div class="info-list">
+        <div class="info-item">
+          <span>Loan Type</span>
+          <strong>{{ loan.loan_type|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Purpose</span>
+          <strong>{{ loan.purpose|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Employment Type</span>
+          <strong>{{ loan.employment_type|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Existing Loans</span>
+          <strong>{{ loan.existing_loans|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Repayment Method</span>
+          <strong>{{ loan.repayment_method|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Monthly Income</span>
+          <strong>{% if loan.monthly_income %}NPR {{ loan.monthly_income|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Remarks</span>
+          <strong>{{ loan.remarks|default:"N/A" }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Additional Details</h2>
+      {% if detail %}
+      <div class="info-list">
+        <div class="info-item">
+          <span>Personal Reason</span>
+          <strong>{{ detail.personal_reason|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Existing EMI</span>
+          <strong>{% if detail.existing_emi %}NPR {{ detail.existing_emi|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Property Type</span>
+          <strong>{{ detail.property_type|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Property Value</span>
+          <strong>{% if detail.property_value %}NPR {{ detail.property_value|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Property Location</span>
+          <strong>{{ detail.property_location|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Construction Status</span>
+          <strong>{{ detail.construction_status|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Co-Applicant</span>
+          <strong>{{ detail.co_applicant_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Co-Applicant Relation</span>
+          <strong>{{ detail.co_applicant_relation|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Student Name</span>
+          <strong>{{ detail.student_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Course Name</span>
+          <strong>{{ detail.course_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Institution</span>
+          <strong>{{ detail.institution_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Institution Location</span>
+          <strong>{{ detail.institution_location|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Course Duration</span>
+          <strong>{% if detail.course_duration %}{{ detail.course_duration }} months{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Guardian Name</span>
+          <strong>{{ detail.guardian_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Guardian Income</span>
+          <strong>{% if detail.guardian_income %}NPR {{ detail.guardian_income|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Business Name</span>
+          <strong>{{ detail.business_name|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Business Type</span>
+          <strong>{{ detail.business_type|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Business Registration</span>
+          <strong>{{ detail.business_registration|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Business Age</span>
+          <strong>{% if detail.business_age %}{{ detail.business_age }} years{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Annual Turnover</span>
+          <strong>{% if detail.annual_turnover %}NPR {{ detail.annual_turnover|floatformat:2 }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Business Address</span>
+          <strong>{{ detail.business_address|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Land Area (Hectares)</span>
+          <strong>{% if detail.land_area_hectares %}{{ detail.land_area_hectares }}{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Crop Type</span>
+          <strong>{{ detail.crop_type|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Farming Experience</span>
+          <strong>{% if detail.farming_experience_years %}{{ detail.farming_experience_years }} years{% else %}N/A{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Irrigation Facility</span>
+          <strong>{% if detail.irrigation_facility %}Yes{% else %}No{% endif %}</strong>
+        </div>
+        <div class="info-item">
+          <span>Previous Harvest</span>
+          <strong>{{ detail.previous_harvest_details|default:"N/A" }}</strong>
+        </div>
+        <div class="info-item">
+          <span>Equipment Owned</span>
+          <strong>{{ detail.equipment_owned|default:"N/A" }}</strong>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No additional application details were submitted for this loan.</p>
+      {% endif %}
+    </div>
+
+    <div class="section">
+      <h2>Documents</h2>
+      <div class="info-list">
+        <div class="info-item">
+          <span>Property Documents</span>
+          <strong>
+            {% if loan.property_documents %}
+              <a class="doc-link" href="{{ loan.property_documents.url }}">View Document</a>
+            {% else %}
+              N/A
+            {% endif %}
+          </strong>
+        </div>
+        <div class="info-item">
+          <span>Admission Letter</span>
+          <strong>
+            {% if loan.admission_letter %}
+              <a class="doc-link" href="{{ loan.admission_letter.url }}">View Document</a>
+            {% else %}
+              N/A
+            {% endif %}
+          </strong>
+        </div>
+        <div class="info-item">
+          <span>Business Plan</span>
+          <strong>
+            {% if loan.business_plan %}
+              <a class="doc-link" href="{{ loan.business_plan.url }}">View Document</a>
+            {% else %}
+              N/A
+            {% endif %}
+          </strong>
+        </div>
+        <div class="info-item">
+          <span>Land Documents</span>
+          <strong>
+            {% if loan.land_documents %}
+              <a class="doc-link" href="{{ loan.land_documents.url }}">View Document</a>
+            {% else %}
+              N/A
+            {% endif %}
+          </strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Decision</h2>
+      {% if loan.status == 'pending' %}
+      <form method="POST" class="action-bar">
+        {% csrf_token %}
+        <button type="submit" name="action" value="verify" class="btn-approve">Verify Loan</button>
+        <button type="submit" name="action" value="reject" class="btn-reject">Reject Loan</button>
+      </form>
+      {% else %}
+      <p class="muted">This loan has already been {{ loan.get_status_display|lower }}.</p>
+      {% endif %}
+    </div>
+  </main>
+
+  <script>
+    const loanData = {
+      id: {{ loan.id|default:"null" }},
+      status: "{{ loan.get_status_display|default:''|escapejs }}",
+      applicant: {
+        name: "{{ loan.member.user.get_full_name|default:loan.member.user.username|escapejs }}",
+        username: "{{ loan.member.user.username|escapejs }}",
+        email: "{{ loan.member.user.email|default:'N/A'|escapejs }}",
+        phone: "{{ loan.member.phone|default:'N/A'|escapejs }}",
+        address: "{{ loan.member.address|default:'N/A'|escapejs }}",
+        occupation: "{{ loan.member.occupation|default:'N/A'|escapejs }}"
+      },
+      loan: {
+        type: "{{ loan.loan_type|default:'N/A'|escapejs }}",
+        amount: "{{ loan.amount|floatformat:2 }}",
+        interest_rate: "{{ loan.interest_rate|floatformat:2 }}",
+        duration_months: "{{ loan.duration_months|default:'N/A' }}",
+        purpose: "{{ loan.purpose|default:'N/A'|escapejs }}",
+        repayment_method: "{{ loan.repayment_method|default:'N/A'|escapejs }}",
+        employment_type: "{{ loan.employment_type|default:'N/A'|escapejs }}"
+      }
+    };
+
+    function handlePrint() {
+      window.print();
+    }
+
+    function handleExport() {
+      const blob = new Blob([JSON.stringify(loanData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `loan-${loanData.id || 'detail'}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+
+    document.querySelectorAll('[data-action]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const action = button.getAttribute('data-action');
+        if (action === 'print') {
+          handlePrint();
+        }
+        if (action === 'export') {
+          handleExport();
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

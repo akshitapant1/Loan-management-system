@@ -1,0 +1,470 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applicant Profile - LMS Nepal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .logo {
+      padding: 25px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 15px;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-left-color: #3b82f6;
+      padding-left: 30px;
+    }
+
+    .sidebar ul li a.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: white;
+      border-left-color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: white !important;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      background: white;
+      padding: 26px 30px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      border-left: 6px solid #3b82f6;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      color: #0f172a;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .back-link {
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #e2e8f0;
+      color: #0f172a;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      background: #cbd5e1;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      right: -40px;
+      top: -40px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    .card h3 {
+      color: #0f172a;
+      font-size: 16px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card p {
+      color: #475569;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .info-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px 18px;
+      margin-top: 10px;
+    }
+
+    .info-item {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px 14px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .info-item span {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .info-item strong {
+      color: #0f172a;
+      font-size: 14px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 16px;
+      color: #0f172a;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .data-table thead {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+    }
+
+    .data-table th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 14px;
+    }
+
+    .data-table tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    .btn-view {
+      display: inline-block;
+      padding: 8px 12px;
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-view:hover {
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    }
+
+    .muted {
+      color: #94a3b8;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Scrollbar */
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        z-index: 1000;
+      }
+
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .header-actions {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo"> LMS Nepal</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'admin_loans' %}">Loans</a></li>
+      <li><a href="{% url 'admin_applicants' %}" class="active">Applicants</a></li>
+      <li><a href="{% url 'admin_reports' %}">Reports</a></li>
+      <li><a href="{% url 'admin_settings' %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div>
+        <h1>{{ member.user.get_full_name|default:member.user.username }}</h1>
+        <p>Applicant profile and loan history.</p>
+      </div>
+      <div class="header-actions">
+        <a class="back-link" href="{% url 'admin_applicants' %}">Back to Applicants</a>
+      </div>
+    </header>
+
+    <div class="profile-grid">
+      <div class="card">
+        <h3>Profile</h3>
+        <p><strong>Username:</strong> {{ member.user.username }}</p>
+        <p><strong>Email:</strong> {{ member.user.email|default:"N/A" }}</p>
+        <p><strong>Phone:</strong> {{ member.phone|default:"N/A" }}</p>
+        <p><strong>Address:</strong> {{ member.address|default:"N/A" }}</p>
+      </div>
+      <div class="card">
+        <h3>Personal</h3>
+        <p><strong>Date of Birth:</strong> {{ member.dob|date:"M d, Y"|default:"N/A" }}</p>
+        <p><strong>Occupation:</strong> {{ member.occupation|default:"N/A" }}</p>
+        <p><strong>Monthly Income:</strong> {% if member.monthly_income %}NPR {{ member.monthly_income|floatformat:2 }}{% else %}N/A{% endif %}</p>
+        <p><strong>Joined:</strong> {{ member.joined_date|date:"M d, Y" }}</p>
+      </div>
+      <div class="card">
+        <h3>Summary</h3>
+        <p><strong>Total Loans:</strong> {{ summary.total_loans }}</p>
+        <p><strong>Active Loans:</strong> {{ summary.active_loans }}</p>
+        <p><strong>Pending Loans:</strong> {{ summary.pending_loans }}</p>
+        <p><strong>Total Borrowed:</strong> NPR {{ summary.total_borrowed|floatformat:2 }}</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Loan Statistics</h2>
+      <div class="stats">
+        <div class="stat">
+          <span>Total Loans</span>
+          <strong>{{ summary.total_loans }}</strong>
+        </div>
+        <div class="stat">
+          <span>Active</span>
+          <strong>{{ summary.active_loans }}</strong>
+        </div>
+        <div class="stat">
+          <span>Pending</span>
+          <strong>{{ summary.pending_loans }}</strong>
+        </div>
+        <div class="stat">
+          <span>Closed</span>
+          <strong>{{ summary.closed_loans }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Loan History</h2>
+      {% if loans %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Loan ID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Applied</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for loan in loans %}
+          <tr>
+            <td>#{{ loan.id }}</td>
+            <td>{{ loan.loan_type|default:"N/A" }}</td>
+            <td>NPR {{ loan.amount|floatformat:2 }}</td>
+            <td>{{ loan.get_status_display }}</td>
+            <td>{{ loan.issued_date|date:"M d, Y" }}</td>
+            <td><a class="btn-view" href="{% url 'admin_loan_detail' loan.id %}">View</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p class="muted">No loans found for this applicant.</p>
+      {% endif %}
+    </div>
+  </main>
+
+</body>
+</html>

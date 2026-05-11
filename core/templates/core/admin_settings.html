@@ -1,0 +1,360 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/settings.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - LMS Nepal</title>
+</head>
+
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #0f172a;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+  
+    .logo {
+      padding: 25px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
+    }
+  
+    .sidebar ul {
+      list-style: none;
+      padding: 20px 0;
+    }
+  
+    .sidebar ul li {
+      margin: 0;
+    }
+  
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 15px;
+    }
+  
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-left-color: #3b82f6;
+      padding-left: 30px;
+    }
+  
+    .sidebar ul li a.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: white;
+      border-left-color: #3b82f6;
+      font-weight: 600;
+    }
+  
+    .logout-btn {
+      margin-top: 20px;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+  
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: white !important;
+    }
+  
+    /* Main content */
+    .main-content {
+      margin-left: 260px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #ffffff;
+      padding: 22px 24px;
+      border-radius: 14px;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+      margin-bottom: 22px;
+      border-left: 5px solid #3b82f6;
+    }
+
+    .header h1 {
+      margin-bottom: 4px;
+      font-size: 26px;
+    }
+
+    .header p {
+      color: #64748b;
+      margin-bottom: 0;
+    }
+
+/* Settings sections */
+.settings-section {
+  margin-bottom: 24px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+/* Section headers */
+.settings-section h2 {
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.profile-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+.profile-meta h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+
+.profile-meta p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* Form inputs */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="password"],
+.input-group input[type="file"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Checkbox groups */
+.checkbox-group label {
+  font-weight: normal;
+}
+
+/* Buttons */
+button.save-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+  button.save-btn:hover {
+    background-color: #1d4ed8;
+  }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 200px;
+    }
+
+    .main-content {
+      margin-left: 200px;
+    }
+
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      z-index: 1000;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+
+</style>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">LMS Nepal</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'admin_loans' %}">Loans</a></li>
+      <li><a href="{% url 'admin_applicants' %}">Applicants</a></li>
+      <li><a href="{% url 'admin_reports' %}">Reports</a></li>
+      <li><a href="{% url 'admin_settings' %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="header">
+      <h1>Settings</h1>
+      <p>Update your profile, security, and preferences.</p>
+    </header>
+
+    <section class="settings-grid">
+      <!-- Profile Section -->
+      <section class="settings-section">
+        <h2>Profile</h2>
+        <div class="profile-card">
+          {% if member and member.profile_photo %}
+            <img class="profile-photo" src="{{ member.profile_photo.url }}" alt="Admin profile">
+          {% else %}
+            <img class="profile-photo" src="{% static 'core/images/user.png' %}" alt="Admin profile">
+          {% endif %}
+          <div class="profile-meta">
+            <h3>{{ request.user.get_full_name|default:request.user.username }}</h3>
+            <p>{{ request.user.email|default:"No email set" }}</p>
+          </div>
+        </div>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="input-group">
+            <label for="admin_name">Name</label>
+            <input type="text" id="admin_name" name="admin_name" value="{{ request.user.get_full_name|default:request.user.username }}">
+          </div>
+          <div class="input-group">
+            <label for="admin_email">Email</label>
+            <input type="email" id="admin_email" name="admin_email" value="{{ request.user.email }}">
+          </div>
+          <div class="input-group">
+            <label for="profile_pic">Profile Picture</label>
+            <input type="file" id="profile_pic" name="profile_pic">
+          </div>
+          <button type="submit" class="save-btn">Save Profile</button>
+        </form>
+      </section>
+
+      <div>
+        <!-- Password Section -->
+        <section class="settings-section">
+          <h2>Password</h2>
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+              <label for="current_password">Current Password</label>
+              <input type="password" id="current_password" name="current_password">
+            </div>
+            <div class="input-group">
+              <label for="new_password">New Password</label>
+              <input type="password" id="new_password" name="new_password">
+            </div>
+            <div class="input-group">
+              <label for="confirm_password">Confirm New Password</label>
+              <input type="password" id="confirm_password" name="confirm_password">
+            </div>
+            <button type="submit" class="save-btn">Update Password</button>
+          </form>
+        </section>
+
+        <!-- Security Section -->
+        <section class="settings-section">
+          <h2>Security</h2>
+          <form method="post">
+            {% csrf_token %}
+            <div class="input-group checkbox-group">
+              <label>
+                <input type="checkbox" name="two_factor">
+                Enable Two-Factor Authentication (2FA)
+              </label>
+            </div>
+            <button type="submit" class="save-btn">Update Security</button>
+          </form>
+        </section>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

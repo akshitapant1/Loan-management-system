@@ -1,0 +1,355 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applicants - LMS Nepal</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+
+   /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+      padding: 25px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 20px 0;
+    }
+
+    .sidebar ul li {
+      margin: 0;
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 15px;
+    }
+
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-left-color: #3b82f6;
+      padding-left: 30px;
+    }
+
+    .sidebar ul li a.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: white;
+      border-left-color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .logout-btn {
+      margin-top: 20px;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: white !important;
+    }
+    
+  /* Main content */
+  .main-content {
+    margin-left: 260px;
+    padding: 30px;
+    min-height: 100vh;
+  }
+
+/* Cards */
+.applicant-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+@media (max-width: 980px) {
+  .applicant-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.applicant-card {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.applicant-card::after {
+  content: '';
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.applicant-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.12);
+}
+
+.applicant-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  overflow: hidden;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.applicant-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.applicant-name:hover {
+  text-decoration: underline;
+}
+
+.applicant-meta {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0 16px;
+}
+
+.stat {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.stat span {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 6px;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.applicant-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-profile {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease;
+}
+
+.view-profile:hover {
+  background: #1d4ed8;
+}
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 200px;
+    }
+
+    .main-content {
+      margin-left: 200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      z-index: 1000;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+
+</style>
+
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="logo">LMS Nepal</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'admin_loans' %}">Loans</a></li>
+      <li><a href="{% url 'admin_applicants' %}">Applicants</a></li>
+      <li><a href="{% url 'admin_reports' %}">Reports</a></li>
+      <li><a href="{% url 'admin_settings' %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <h1>Applicants</h1>
+      <p>View all users who have applied for loans.</p>
+    </header>
+
+    {% if member_data %}
+    <div class="applicant-grid">
+      {% for item in member_data %}
+      <div class="applicant-card">
+        <div class="applicant-header">
+          <div class="avatar">
+            {% if item.member.profile_photo %}
+              <img src="{{ item.member.profile_photo.url }}" alt="{{ item.member.user.get_full_name|default:item.member.user.username }}">
+            {% else %}
+              {{ item.member.user.get_full_name|default:item.member.user.username|slice:":1" }}
+            {% endif %}
+          </div>
+          <div>
+            <a class="applicant-name" href="{% url 'admin_applicant_detail' item.member.id %}">
+              {{ item.member.user.get_full_name|default:item.member.user.username }}
+            </a>
+            <div class="applicant-meta">{{ item.member.user.email|default:"N/A" }}</div>
+          </div>
+        </div>
+
+        <div class="applicant-meta">Phone: {{ item.member.phone|default:"N/A" }}</div>
+        <div class="applicant-meta">Joined: {{ item.member.joined_date|date:"M d, Y" }}</div>
+
+        <div class="stat-row">
+          <div class="stat">
+            <span>Total Loans</span>
+            <strong>{{ item.total_loans }}</strong>
+          </div>
+          <div class="stat">
+            <span>Active</span>
+            <strong>{{ item.active_loans }}</strong>
+          </div>
+          <div class="stat">
+            <span>Borrowed</span>
+            <strong>NPR {{ item.total_borrowed|floatformat:2 }}</strong>
+          </div>
+        </div>
+
+        <div class="applicant-footer">
+          <span class="applicant-meta">ID: #{{ item.member.id }}</span>
+          <a class="view-profile" href="{% url 'admin_applicant_detail' item.member.id %}">View Profile</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-data">
+      <p>No applicants found.</p>
+    </div>
+    {% endif %}
+  </main>
+
+</body>
+</html>

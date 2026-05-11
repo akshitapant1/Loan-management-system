@@ -1,0 +1,83 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/index.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Nepal</title>
+    <link rel="stylesheet" href="{% static 'core/index.css' %}">
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">LMS Nepal</div>
+  <ul class="nav-links">
+    <li><a href="{% url 'index' %}" class="active">Home</a></li>
+    <li><a href="{% url 'about' %}">About</a></li>
+    <li><a href="{% url 'loans' %}">Loans</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+  </ul>
+  <div class="auth-links">
+    <a href="{% url 'login' %}" class="btn login-btn">Login</a>
+    <a href="{% url 'register' %}" class="btn register-btn">Register</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-overlay">
+        <h1>Empowering Nepalese Cooperatives</h1>
+        <p>Streamline your loan management with our intuitive platform.</p>
+        <a href="{% url 'loans' %}" class="cta-button">Get Started</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features">
+<h2>Our Key Features</h2>
+<div class="features-grid">
+    <div class="feature-card">
+        <img src="{% static 'core/images/loan-icon.png' %}" alt="Loan management">
+        <h3>Loan Management</h3>
+        <p>Manage loans, repayments, and schedules effortlessly.</p>
+    </div>
+    <div class="feature-card">
+        <img src="{% static 'core/images/calculation.png' %}" alt="Cooperative loans image">
+        <h3>EMI Calculation</h3>
+        <p>Calculate EMIs for your loan processes.</p>
+    </div>
+    <div class="feature-card">
+        <img src="{% static 'core/images/monitor.png' %}" alt="Cooperative loans image">
+        <h3>Reports & Analytics</h3>
+        <p>Generate detailed charts and reports to track performance.</p>
+    </div>
+    <div class="feature-card">
+        <img src="{% static 'core/images/management.png' %}" alt="Cooperative loans image">
+        <h3>Staff Management</h3>
+        <p>Assign roles and permissions.</p>
+    </div>
+</div>
+</section>
+
+<!-- Testimonials Section -->
+ <section id="testimonials">
+    <h2>How can LMS Help You?</h2>
+    <div class="testimonial">
+        <p>"This system has transformed our loan management process. It's efficient and user-friendly."</p>
+        <cite>- Cooperative Member</cite>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <p>Contact us: info@lmsnepal.com | +977-98XXXXXXXX</p>
+    <p>&copy; 2025 LMS Nepal. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

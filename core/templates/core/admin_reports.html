@@ -1,0 +1,522 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'core/reports.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports - LMS Nepal</title>
+</head>
+<style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #0f172a;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+  
+    .logo {
+      padding: 25px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 1px;
+    }
+  
+    .sidebar ul {
+      list-style: none;
+      padding: 20px 0;
+    }
+  
+    .sidebar ul li {
+      margin: 0;
+    }
+  
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 15px 25px;
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 15px;
+    }
+  
+    .sidebar ul li a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-left-color: #3b82f6;
+      padding-left: 30px;
+    }
+  
+    .sidebar ul li a.active {
+      background: rgba(59, 130, 246, 0.15);
+      color: white;
+      border-left-color: #3b82f6;
+      font-weight: 600;
+    }
+  
+    .logout-btn {
+      margin-top: 20px;
+      background: rgba(239, 68, 68, 0.15) !important;
+      color: #fca5a5 !important;
+      border-left-color: #ef4444 !important;
+    }
+  
+    .logout-btn:hover {
+      background: rgba(239, 68, 68, 0.25) !important;
+      color: white !important;
+    }
+  
+    /* Main content */
+    .main-content {
+      margin-left: 260px;
+      padding: 30px;
+      min-height: 100vh;
+    }
+
+/* Header */
+.header {
+  background: #ffffff;
+  padding: 22px 24px;
+  border-radius: 14px;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+  margin-bottom: 22px;
+  border-left: 5px solid #3b82f6;
+}
+.header h1 {
+  margin-bottom: 4px;
+  font-size: 26px;
+}
+.header p {
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+/* Report sections */
+.report-section {
+  margin-bottom: 28px;
+}
+
+/* Layout */
+.report-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.panel h2 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+.panel h3 {
+  margin: 0 0 14px 0;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 13px;
+  margin-top: -8px;
+  margin-bottom: 14px;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summary-card {
+  background: #ffffff;
+  color: #0f172a;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+  .summary-card h3 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+  }
+
+  .summary-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #3b82f6, #22c55e);
+  }
+
+  .summary-value {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .summary-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+  }
+
+  /* Status cards */
+  .status-cards {
+    display: grid;
+    gap: 14px;
+  }
+
+  .status-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .status-title {
+    font-weight: 600;
+    color: #0f172a;
+  }
+
+  .status-metric {
+    font-size: 13px;
+    color: #475569;
+  }
+
+  .progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: #e2e8f0;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+  }
+
+  /* Data table */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .data-table th, .data-table td {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .data-table th {
+    background-color: #0f172a;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+
+  .data-table tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+
+  .sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .sidebar {
+      width: 200px;
+    }
+
+    .main-content {
+      margin-left: 200px;
+    }
+
+    .report-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      z-index: 1000;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+  }
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-pending {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-closed {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+</style>
+
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">LMS Nepal</div>
+    <ul>
+      <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+      <li><a href="{% url 'admin_loans' %}">Loans</a></li>
+      <li><a href="{% url 'admin_applicants' %}">Applicants</a></li>
+      <li><a href="{% url 'admin_reports' %}">Reports</a></li>
+      <li><a href="{% url 'admin_settings' %}">Settings</a></li>
+      <li><a href="{% url 'logout' %}" class="logout-btn">Logout</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header class="header">
+      <h1>Reports</h1>
+      <p>Overview of loans, members, and payment statistics.</p>
+    </header>
+
+    <!-- Summary Statistics -->
+    <section class="report-section">
+      <h2>Overall Statistics</h2>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h3>Total Members</h3>
+          <p class="summary-value">{{ total_members }}</p>
+          <div class="summary-sub">Active users on the platform</div>
+        </div>
+        <div class="summary-card">
+          <h3>Total Loans</h3>
+          <p class="summary-value">{{ total_loans }}</p>
+          <div class="summary-sub">All time applications</div>
+        </div>
+        <div class="summary-card">
+          <h3>Total Disbursed</h3>
+          <p class="summary-value">NPR {{ total_disbursed|floatformat:2 }}</p>
+          <div class="summary-sub">Approved + closed loans</div>
+        </div>
+        <div class="summary-card">
+          <h3>Total Collected</h3>
+          <p class="summary-value">NPR {{ total_collected|floatformat:2 }}</p>
+          <div class="summary-sub">Payments received to date</div>
+        </div>
+        <div class="summary-card">
+          <h3>Outstanding Amount</h3>
+          <p class="summary-value">NPR {{ outstanding|floatformat:2 }}</p>
+          <div class="summary-sub">Pending collection</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Loan Status Breakdown -->
+    <section class="report-section">
+      <div class="report-grid">
+        <div class="panel">
+          <h2>Loan Status Breakdown</h2>
+          <div class="subtitle">Distribution of loan applications</div>
+          <div class="status-cards">
+            <div class="status-card">
+              <div class="status-row">
+                <div class="status-title">Pending</div>
+                <div class="status-metric">
+                  {{ pending_loans }} of {{ total_loans }} ({{ pending_pct }}%)
+                </div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: {{ pending_pct }}%; background: #f59e0b;"></div>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-row">
+                <div class="status-title">Approved</div>
+                <div class="status-metric">
+                  {{ approved_loans }} of {{ total_loans }} ({{ approved_pct }}%)
+                </div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: {{ approved_pct }}%; background: #22c55e;"></div>
+              </div>
+            </div>
+
+            <div class="status-card">
+              <div class="status-row">
+                <div class="status-title">Closed/Rejected</div>
+                <div class="status-metric">
+                  {{ closed_loans }} of {{ total_loans }} ({{ closed_pct }}%)
+                </div>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width: {{ closed_pct }}%; background: #ef4444;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Quick Highlights</h2>
+          <div class="subtitle">At-a-glance performance</div>
+          <table class="data-table">
+            <tbody>
+              <tr>
+                <td>Pending Loans</td>
+                <td>{{ pending_loans }}</td>
+              </tr>
+              <tr>
+                <td>Approved Loans</td>
+                <td>{{ approved_loans }}</td>
+              </tr>
+              <tr>
+                <td>Closed Loans</td>
+                <td>{{ closed_loans }}</td>
+              </tr>
+              <tr>
+                <td>Outstanding</td>
+                <td>NPR {{ outstanding|floatformat:2 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Loans Report -->
+    <section class="report-section">
+      <div class="panel">
+        <h2>Recent Loan Applications</h2>
+        <div class="subtitle">Last 6 months</div>
+      {% if recent_loans %}
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Loan ID</th>
+              <th>Applicant</th>
+              <th>Loan Type</th>
+              <th>Amount</th>
+              <th>Duration</th>
+              <th>Interest Rate</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for loan in recent_loans %}
+            <tr>
+              <td>#{{ loan.id }}</td>
+              <td>{{ loan.member.user.get_full_name|default:loan.member.user.username }}</td>
+              <td>{{ loan.loan_type|title }}</td>
+              <td>NPR {{ loan.amount|floatformat:2 }}</td>
+              <td>{{ loan.duration_months }} months</td>
+              <td>{{ loan.interest_rate|floatformat:2 }}%</td>
+              <td>
+                <span class="status-badge status-{{ loan.status }}">
+                  {{ loan.get_status_display }}
+                </span>
+              </td>
+              <td>{{ loan.issued_date|date:"Y-m-d" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p>No loan applications in the last 6 months.</p>
+      {% endif %}
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
